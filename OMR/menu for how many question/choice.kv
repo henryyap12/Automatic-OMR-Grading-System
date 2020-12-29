@@ -1,0 +1,138 @@
+ScreenManager:
+    Menu:
+    Question5:
+    Question10:
+    Question20:
+    Question40:
+
+<Question5>:
+    name: "5"
+
+    FloatLayout:
+        cols:1
+
+        FloatLayout:
+            size: root.width, root.height/2
+
+            Button:
+                pos_hint:{"x":0.2,"y":0.05}
+                size_hint: 0.6, 0.15
+                text: "Upload"
+                font_size: (root.width**2 + root.height**2) / 14**4
+                on_release:
+                    root.manager.transition.direction = "left"
+                    root.Question5()
+
+<Question10>:
+    name: "10"
+
+    FloatLayout:
+        cols:1
+
+        FloatLayout:
+            size: root.width, root.height/2
+
+            Label:
+                text: "10 Question"
+                size_hint: 0.8, 0.2
+                pos_hint: {"x":0.1, "top":1}
+                font_size: (root.width**2 + root.height**2) / 14**4
+
+            Button:
+                pos_hint:{"x":0.2,"y":0.05}
+                size_hint: 0.6, 0.15
+                text: "Upload"
+                font_size: (root.width**2 + root.height**2) / 14**4
+                on_release:
+                    root.manager.transition.direction = "left"
+                    root.submit()
+
+<Question20>:
+    name: "20"
+
+    FloatLayout:
+        cols:1
+
+        FloatLayout:
+            size: root.width, root.height/2
+
+            Label:
+                text: "20 Question"
+                size_hint: 0.8, 0.2
+                pos_hint: {"x":0.1, "top":1}
+                font_size: (root.width**2 + root.height**2) / 14**4
+
+            Button:
+                pos_hint:{"x":0.2,"y":0.05}
+                size_hint: 0.6, 0.15
+                text: "Upload"
+                font_size: (root.width**2 + root.height**2) / 14**4
+                on_release:
+                    root.manager.transition.direction = "left"
+                    root.submit()
+
+<Question40>:
+    name: "40"
+
+    FloatLayout:
+        cols:1
+
+        FloatLayout:
+            size: root.width, root.height/2
+
+            Label:
+                text: "40 Question"
+                size_hint: 0.8, 0.2
+                pos_hint: {"x":0.1, "top":1}
+                font_size: (root.width**2 + root.height**2) / 14**4
+
+            Button:
+                pos_hint:{"x":0.2,"y":0.05}
+                size_hint: 0.6, 0.15
+                text: "Upload"
+                font_size: (root.width**2 + root.height**2) / 14**4
+                on_release:
+                    root.manager.transition.direction = "left"
+                    root.submit()
+
+<Menu>:
+    FloatLayout:
+        Button:
+            pos_hint:{"x":0.3, "y": 0.75}
+            size_hint:0.4,0.1
+            text: "5 Question"
+            on_release:
+                root.manager.transition.direction = "left"
+                root.Question5()
+
+        Button:
+            pos_hint:{"x":0.3, "y": 0.6}
+            size_hint:0.4,0.1
+            text: "10 Question"
+            on_release:
+                root.manager.transition.direction = "left"
+                root.Question10()
+
+        Button:
+            pos_hint:{"x":0.3, "y": 0.45}
+            size_hint:0.4,0.1
+            text: "20 Question"
+            on_release:
+                root.manager.transition.direction = "left"
+                root.Question20()
+
+        Button:
+            pos_hint:{"x":0.3, "y": 0.3}
+            size_hint:0.4,0.1
+            text: "40 Question"
+            on_release:
+                root.manager.transition.direction = "left"
+                root.Question40()
+
+        Button:
+            pos_hint:{"x":0.35, "y": 0.1}
+            size_hint:0.3,0.1
+            text: "Back"
+            on_release:
+                app.root.current = "menu"
+                root.manager.transition.direction = "down"
