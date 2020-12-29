@@ -1,9 +1,11 @@
 ScreenManager:
-    Menu:
     Question5:
+    Menu:
+
     Question10:
     Question20:
     Question40:
+
 
 <Question5>:
     name: "5"
@@ -14,14 +16,79 @@ ScreenManager:
         FloatLayout:
             size: root.width, root.height/2
 
+            Label:
+                text:"Insert Answers"
+                font_size: (root.width**2 + root.height**2) / 14**4
+                pos_hint: {"x":0.25, "top":0.9}
+                size_hint: 0.5,0.12
+
             Button:
-                pos_hint:{"x":0.2,"y":0.05}
-                size_hint: 0.6, 0.15
+                pos_hint:{"x":0.55,"y":0.05}
+                size_hint: 0.3, 0.1
                 text: "Upload"
                 font_size: (root.width**2 + root.height**2) / 14**4
                 on_release:
                     root.manager.transition.direction = "left"
                     root.Question5()
+            Label:
+                text:"1"
+                font_size: (root.width**2 + root.height**2) / 14**4
+                pos_hint:{"x":0.15,"y":0.65}
+                size_hint: 0.3, 0.1
+            Label:
+                text:"2"
+                font_size: (root.width**2 + root.height**2) / 14**4
+                pos_hint:{"x":0.15,"y":0.55}
+                size_hint: 0.3, 0.1
+            Label:
+                text:"3"
+                font_size: (root.width**2 + root.height**2) / 14**4
+                pos_hint:{"x":0.15,"y":0.45}
+                size_hint: 0.3, 0.1
+            Label:
+                text:"4"
+                font_size: (root.width**2 + root.height**2) / 14**4
+                pos_hint:{"x":0.15,"y":0.35}
+                size_hint: 0.3, 0.1
+            Label:
+                text:"5"
+                font_size: (root.width**2 + root.height**2) / 14**4
+                pos_hint:{"x":0.15,"y":0.25}
+                size_hint: 0.3, 0.1
+            Button:
+                pos_hint:{"x":0.15,"y":0.05}
+                size_hint: 0.3, 0.1
+                text: "Back"
+                font_size: (root.width**2 + root.height**2) / 14**4
+                on_release:
+                    root.manager.transition.direction = "left"
+                    root.Menu()
+
+            TextInput:
+                font_size: (root.width**2 + root.height**2) / 14**4
+                multiline: False
+                pos_hint: {"x": 0.4, "top":0.72}
+                size_hint: 0.45, 0.05
+            TextInput:
+                font_size: (root.width**2 + root.height**2) / 14**4
+                multiline: False
+                pos_hint: {"x": 0.4, "top":0.62}
+                size_hint: 0.45, 0.05
+            TextInput:
+                font_size: (root.width**2 + root.height**2) / 14**4
+                multiline: False
+                pos_hint: {"x": 0.4, "top":0.52}
+                size_hint: 0.45, 0.05
+            TextInput:
+                font_size: (root.width**2 + root.height**2) / 14**4
+                multiline: False
+                pos_hint: {"x": 0.4, "top":0.42}
+                size_hint: 0.45, 0.05
+            TextInput:
+                font_size: (root.width**2 + root.height**2) / 14**4
+                multiline: False
+                pos_hint: {"x": 0.4, "top":0.32}
+                size_hint: 0.45, 0.05
 
 <Question10>:
     name: "10"
@@ -32,11 +99,6 @@ ScreenManager:
         FloatLayout:
             size: root.width, root.height/2
 
-            Label:
-                text: "10 Question"
-                size_hint: 0.8, 0.2
-                pos_hint: {"x":0.1, "top":1}
-                font_size: (root.width**2 + root.height**2) / 14**4
 
             Button:
                 pos_hint:{"x":0.2,"y":0.05}
@@ -56,11 +118,6 @@ ScreenManager:
         FloatLayout:
             size: root.width, root.height/2
 
-            Label:
-                text: "20 Question"
-                size_hint: 0.8, 0.2
-                pos_hint: {"x":0.1, "top":1}
-                font_size: (root.width**2 + root.height**2) / 14**4
 
             Button:
                 pos_hint:{"x":0.2,"y":0.05}
@@ -80,11 +137,6 @@ ScreenManager:
         FloatLayout:
             size: root.width, root.height/2
 
-            Label:
-                text: "40 Question"
-                size_hint: 0.8, 0.2
-                pos_hint: {"x":0.1, "top":1}
-                font_size: (root.width**2 + root.height**2) / 14**4
 
             Button:
                 pos_hint:{"x":0.2,"y":0.05}
@@ -100,7 +152,7 @@ ScreenManager:
         Button:
             pos_hint:{"x":0.3, "y": 0.75}
             size_hint:0.4,0.1
-            text: "5 Question"
+            text: "5 Questions"
             on_release:
                 root.manager.transition.direction = "left"
                 root.Question5()
@@ -108,7 +160,7 @@ ScreenManager:
         Button:
             pos_hint:{"x":0.3, "y": 0.6}
             size_hint:0.4,0.1
-            text: "10 Question"
+            text: "10 Questions"
             on_release:
                 root.manager.transition.direction = "left"
                 root.Question10()
@@ -116,7 +168,7 @@ ScreenManager:
         Button:
             pos_hint:{"x":0.3, "y": 0.45}
             size_hint:0.4,0.1
-            text: "20 Question"
+            text: "20 Questions"
             on_release:
                 root.manager.transition.direction = "left"
                 root.Question20()
@@ -124,7 +176,7 @@ ScreenManager:
         Button:
             pos_hint:{"x":0.3, "y": 0.3}
             size_hint:0.4,0.1
-            text: "40 Question"
+            text: "40 Questions"
             on_release:
                 root.manager.transition.direction = "left"
                 root.Question40()
