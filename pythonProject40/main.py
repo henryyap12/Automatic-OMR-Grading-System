@@ -5,11 +5,11 @@ import utlis
 phone = True
 width = 400
 height = 400
-widthImg = 700
-heightImg = 700
-url = 'http://192.168.1.116:8080/video'
+widthImg = 600
+heightImg = 1000
+url = 'http://192.168.1.107:8080/video'
 path = "sample/131781433_400868891230894_7668413708674499293_n.jpg"
-cap = cv2.VideoCapture(url)
+cap = cv2.VideoCapture(0)
 questions = 20
 choices = 5
 mark = int(input("Enter total mark: "))
@@ -19,14 +19,15 @@ count = 0
 
 if __name__ == '__main__':
     while True:
-        if phone:
-            success, frame = cap.read()
-        else:
-            frame = cv2.imread(path)
+        #if phone:
+        #    success, frame = cap.read()
+        #else:
+        frame = cv2.imread(path)
         img = cv2.resize(frame, (widthImg, heightImg))
         imggray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
         imgblur = cv2.GaussianBlur(imggray, (5, 5), 1)
         imgcanny = cv2.Canny(imgblur, 100, 200)
+        imgfinal = img.copy()
         imgcountours = img.copy()
         imgbigcountour = img.copy()
         imgsecondbigcountour = img.copy()
@@ -128,7 +129,7 @@ if __name__ == '__main__':
 
                 score = (sum(grading + grading1) / (questions * 2)) * mark
                 print(score)
-                imgfinal = img.copy()
+
                 imgresult = imgwrap.copy()
                 imgresult1 = imgwrapg.copy()
                 utlis.showAnswers(imgresult, myIndex, grading, ans)  # DRAW DETECTED ANSWERS
@@ -145,18 +146,18 @@ if __name__ == '__main__':
                 invMatrix1 = cv2.getPerspectiveTransform(pt21, pt11)  # INVERSE TRANSFORMATION MATRIX
                 imgInvWarp1 = cv2.warpPerspective(imgRawDrawings1, invMatrix1, (widthImg, heightImg))  # INV IMAGE WARP
 
-                # DISPLAY GRADE
+              
                 imgrawgrade = np.zeros_like(imgwrapgrade, np.uint8)
 
-                # NEW BLANK IMAGE WITH GRADE AREA SIZE
+
                 cv2.putText(imgrawgrade, str(float(score)) + "%", (50, 100), cv2.FONT_HERSHEY_COMPLEX, 3, (0, 255, 0),
-                            4)  # ADD THE GRADE TO NEW IMAGE
+                            4)
 
                 invMatrixG = cv2.getPerspectiveTransform(pt02, pt01)
-                # INVERSE TRANSFORMATION MATRIX
+
                 imginvgradedisplay = cv2.warpPerspective(imgrawgrade, invMatrixG,
                                                          (widthImg, heightImg))  # INV IMAGE WARP
-                # SHOW ANSWERS AND GRADE ON FINAL IMAGE
+
                 imginvgradedisplay = cv2.addWeighted(imginvgradedisplay, 1, imgInvWarp, 1, 0)
                 imginvgradedisplay = cv2.addWeighted(imginvgradedisplay, 1, imgInvWarp1, 1, 0)
                 imgfinal = cv2.addWeighted(imgfinal, 1, imginvgradedisplay, 1, 1)
@@ -174,7 +175,11 @@ if __name__ == '__main__':
                   ["Inv Raw", "Raw Drawing", "Final", "Final"]]
         ImageStacked = utlis.stackImages(imageArray, 0.3,lables)
         cv2.imshow("imgfnal", ImageStacked)
-        if cv2.waitKey(1) & 0xFF == ord('q'):
-            cv2.imwrite("FinalImage.jpg", imgwrap)
+        if cv2.waitKey(1) & 0xFF == ord('s'):
+            cv2.imwrite("Scanned/myImage" + str(count) + ".jpg", imgfinal)
+            cv2.putText(imgfinal, "Scan Saved",
+                        (int(ImageStacked.shape[1] / 2) - 200, int(ImageStacked.shape[0] / 2)),
+                        cv2.FONT_HERSHEY_DUPLEX, 3, (0, 0, 255), 5, cv2.LINE_AA)
+            cv2.imshow('Result', imgfinal)
             cv2.waitKey(300)
-            break
+            count += 1

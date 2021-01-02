@@ -1,7 +1,7 @@
 import cv2
 import numpy as np
 import utlis
-import pandas as pd
+
 
 phone = True
 width = 800
@@ -9,7 +9,7 @@ height = 800
 widthImg = 700
 heightImg = 700
 path = "multiple_choice_template20.png"
-url = 'http://192.168.1.116:8080/video'
+url = 'http://192.168.1.107:8080/video'
 cap = cv2.VideoCapture(url)
 questions = 20
 choices = 5
@@ -25,22 +25,20 @@ if __name__ == '__main__':
         else:
             frame = cv2.imread(path)
         img = cv2.resize(frame, (widthImg, heightImg))
-        cv2.imshow('ori',img)
-        imgcountours = img.copy()
-        imgbigcountour = img.copy()
         imggray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
         imgblur = cv2.GaussianBlur(imggray, (5, 5), 3)
         imgcanny = cv2.Canny(imgblur, 100, 200)
+        imgcountours = img.copy()
+        imgbigcountour = img.copy()
+        imgfinal = img.copy()
         imgblank = np.zeros((heightImg, widthImg, 3), np.uint8)
+
         try:
             contours, _ = cv2.findContours(imgcanny, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_NONE)
             cv2.drawContours(imgcountours, contours, -1, (0, 255, 0), 10)
-
-            # Finding the Rectangle in paper
-            rectcounts = utlis.rectCounter(contours)
-            biggestcountours = utlis.getCornerPoints(rectcounts[0])
-            gradepoint = utlis.getCornerPoints(rectcounts[1])
-            # print(biggestcountours)
+            rect = utlis.rectCounter(contours)
+            biggestcountours = utlis.getCornerPoints(rect[0])
+            gradepoint = utlis.getCornerPoints(rect[1])
 
             if biggestcountours.size != 0 and gradepoint.size != 0:
                 cv2.drawContours(imgbigcountour, biggestcountours, -1, (0, 255, 0), 10)
@@ -58,7 +56,6 @@ if __name__ == '__main__':
                 matrixg = cv2.getPerspectiveTransform(pt01, pt02)
                 imgwrapgrade = cv2.warpPerspective(img, matrixg, (300, 100))
 
-                # Threshold Image
                 imgwrapgray = cv2.cvtColor(imgwrap, cv2.COLOR_BGR2GRAY)
                 imgthres = cv2.threshold(imgwrapgray, 170, 255, cv2.THRESH_BINARY_INV)[1]
                 boxes = utlis.splitBoxes(imgthres)
@@ -74,7 +71,6 @@ if __name__ == '__main__':
                         countR += 1
                         countC = 0
 
-                # Finding Index Value of Marking
                 myIndex = []
                 for x in range(0, questions):
                     arr = mypixalvalue[x]
@@ -87,34 +83,27 @@ if __name__ == '__main__':
                         grading.append(1)
                     else:
                         grading.append(0)
-                #                print(grading)
 
                 score = (sum(grading) / questions) * mark
                 print(score)
-                imgfinal = img.copy()
-                imgresult = imgwrap.copy()
-                utlis.showAnswers(imgresult, myIndex, grading, ans)  # DRAW DETECTED ANSWERS
-                utlis.drawGrid(imgresult)  # DRAW GRID
-                imgRawDrawings = np.zeros_like(imgresult)  # NEW BLANK IMAGE WITH WARP IMAGE SIZE
 
-                utlis.showAnswers(imgRawDrawings, myIndex, grading, ans)  # DRAW ON NEW IMAGE
-                invMatrix = cv2.getPerspectiveTransform(pt2, pt1)  # INVERSE TRANSFORMATION MATRIX
+                imgresult = imgwrap.copy()
+                utlis.showAnswers(imgresult, myIndex, grading, ans)
+                utlis.drawGrid(imgresult)
+                imgRawDrawings = np.zeros_like(imgresult)
+
+                utlis.showAnswers(imgRawDrawings, myIndex, grading, ans)
+                invMatrix = cv2.getPerspectiveTransform(pt2, pt1)
                 imgInvWarp = cv2.warpPerspective(imgRawDrawings, invMatrix, (widthImg, heightImg))  # INV IMAGE WARP
 
-                # DISPLAY GRADE
                 imgrawgrade = np.zeros_like(imgwrapgrade, np.uint8)
-
-                # NEW BLANK IMAGE WITH GRADE AREA SIZE
                 cv2.putText(imgrawgrade, str(int(score)) + "%", (50, 100), cv2.FONT_HERSHEY_COMPLEX, 3, (0, 255, 0),
-                            4)  # ADD THE GRADE TO NEW IMAGE
+                            4)
 
                 invMatrixG = cv2.getPerspectiveTransform(pt02, pt01)
-                # INVERSE TRANSFORMATION MATRIX
                 imginvgradedisplay = cv2.warpPerspective(imgrawgrade, invMatrixG,
-                                                         (widthImg, heightImg))  # INV IMAGE WARP
-                # SHOW ANSWERS AND GRADE ON FINAL IMAGE
+                                                         (widthImg, heightImg))
                 imginvgradedisplay = cv2.addWeighted(imginvgradedisplay, 1, imgInvWarp, 1, 0)
-                cv2.imshow("mark", imginvgradedisplay)
                 imgfinal = cv2.addWeighted(imgfinal, 1, imginvgradedisplay, 1, 1)
 
                 ImageArray = ([img, imggray, imgblur, imgcanny],
@@ -123,13 +112,18 @@ if __name__ == '__main__':
                 cv2.imshow("Final Result", imgfinal)
 
         except Exception:
-            imageArray = ([img, imggray, imgblur, imgcanny],[imgcountours, imgbigcountour, imgblank, imgblank],[imgblank, imgblank, imgblank, imgblank])
-        lables = [["Original", "Gray", "Blur", "Canny"],
-                  ["Contours", "Biggest Con", "Warp", "Threshold"],
-                  ["Result", "Raw Drawing", "Inv Raw", "Final"]]
-        ImageStacked = utlis.stackImages(imageArray, 0.4)
-        cv2.imshow("imgfnal", ImageStacked)
-        if cv2.waitKey(1) & 0xFF == ord('q'):
-            cv2.imwrite("FinalImage.jpg", imgwrap)
-            cv2.waitKey(300)
-            break
+            imageArray = ([img, imggray, imgblur, imgcanny], [imgcountours, imgbigcountour, imgblank, imgblank],
+                          [imgblank, imgblank, imgblank, imgblank])
+            lables = [["Original", "Gray", "Blur", "Canny"],
+                      ["Contours", "Biggest Con", "Warp", "Threshold"],
+                      ["Result", "Raw Drawing", "Inv Raw", "Final"]]
+            ImageStacked = utlis.stackImages(imageArray, 0.4, lables)
+            cv2.imshow("imgfnal", ImageStacked)
+            if cv2.waitKey(1) & 0xFF == ord('s'):
+                cv2.imwrite("Scanned/myImage" + str(count) + ".jpg", imgfinal)
+                cv2.putText(imgfinal, "Scan Saved",
+                            (int(ImageStacked.shape[1] / 2) - 200, int(ImageStacked.shape[0] / 2)),
+                            cv2.FONT_HERSHEY_DUPLEX, 3, (0, 0, 255), 5, cv2.LINE_AA)
+                cv2.imshow('Result', imgfinal)
+                cv2.waitKey(300)
+                count += 1
