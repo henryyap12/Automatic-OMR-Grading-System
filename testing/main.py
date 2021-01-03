@@ -1,16 +1,10 @@
 import cv2
 import numpy as np
 import utlis
-import MySQLdb as mdb
 
 
 def omrmarking(path,ans,mark, score=0):
-    '''try:
-        con = mdb.connect("localhost", "root", "", "yap")
-        cur = con.cursor()
-    except Exception as e:
-        print(e)
-    '''
+
     if 1:
         widthImg = 600
         heightImg = 1000
@@ -79,7 +73,7 @@ def omrmarking(path,ans,mark, score=0):
 
                         if sum(arr[myindexval]) < 5000:
                             myIndex[x] = 999
-                        #print(str(sum(arr[myindexval]))+'sssssssssssssssssss')
+
                     grading = []
                     for x in range(0, questions):
                         if ans[x] == myIndex[x]:
@@ -98,19 +92,12 @@ def omrmarking(path,ans,mark, score=0):
                     imgInvWarp = cv2.warpPerspective(imgRawDrawings, invMatrix, (widthImg, heightImg))
 
                     imgrawgrade = np.zeros_like(imgwrapgrade, np.uint8)
-                    cv2.putText(imgrawgrade, str(float(score)) + "%", (50, 100), cv2.FONT_HERSHEY_COMPLEX, 3,
-                                (0, 255, 0),
-                                4)
+                    cv2.putText(imgrawgrade, str(float(score)) + "%", (50, 100), cv2.FONT_HERSHEY_COMPLEX, 3,(0, 255, 0),4)
                     invMatrixG = cv2.getPerspectiveTransform(pt02, pt01)
                     imginvgradedisplay = cv2.warpPerspective(imgrawgrade, invMatrixG, (widthImg, heightImg))
                     imginvgradedisplay = cv2.addWeighted(imginvgradedisplay, 1, imgInvWarp, 1, 0)
 
                     imgfinal = cv2.addWeighted(imgfinal, 1, imginvgradedisplay, 1, 1)
-
-                    imageArray = ([img, imggray, imgblur, imgcanny],
-                                  [imgcountours, imgbigcountour, imgwrap, imgthres],
-                                  [imgresult, imgInvWarp, imgfinal, imgblank])
-
             except:
                 pass
             cv2.imwrite("Scanned.jpg", imgfinal)

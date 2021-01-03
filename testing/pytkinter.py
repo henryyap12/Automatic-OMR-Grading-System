@@ -79,8 +79,6 @@ scroll_bar.pack(side=RIGHT,fill=Y)
 window.mainloop()
 '''
 
-
-
 ###############################################################
 
 from tkinter import *
@@ -89,14 +87,18 @@ from PIL import ImageTk, Image
 import tkinter as tk
 from main import omrmarking
 import mysql.connector
+from datetime import datetime
+from tkinter.filedialog import askopenfilename
+import cv2
 
-my_connect = mysql.connector.connect(
-  host="localhost",
-  user="root",
-  passwd="",
-  database="yap"
-)
-my_cursor = my_connect.cursor()
+try:
+    my_connect = mysql.connector.connect(host="localhost",user="root",passwd="",database="automaticomr")
+    cur = my_connect.cursor()
+except Exception as e:
+    print(e)
+
+now = datetime.now()
+formatdate = now.strftime('%Y-%m-%d %H-%M-%S')
 
 
 def build():
@@ -111,7 +113,7 @@ def build():
     return window
 
 
-def openfn():
+def openfile():
     filename = filedialog.askopenfilename(title='open')
     global path
     path = filename
@@ -128,45 +130,51 @@ def show(p):
 
 
 def openImg():
-    x = openfn()
+    x = openfile()
     show(x)
 
 
 def getTextInput():
     student = studentlist.get(1.0, tk.END + "-1c")
+    course = courselist.get(1.0, tk.END + "-1c")
     result = answerlist.get(1.0, tk.END + "-1c")
     mark = totalmark.get(1.0, tk.END + "-1c")
-    s = omrmarking(path,result,mark)
-
-    show('Scanned.jpg')
-
-    resultlabel = Label(window,bg="white", text="Result:")
+    s = omrmarking(path, result, mark)
+    resultlabel = Label(window, bg="white", text="Result:")
     resultlabel.place(x=80, y=480)
-    noresult = Label(window,bg="white", text=s,fg='green')
+    noresult = Label(window, bg="white", text=s, fg='green')
     noresult.place(x=80, y=520)
     noresult.option_add('*Font', '12')
+    sql = "INSERT INTO student (studentId, subjectcode, mark, totalmark) VALUES ('{}','{}','{}','{}')".format(student, course,s,mark)
+    cur.execute(sql)
+    my_connect.commit()
+    print(cur.rowcount, "record inserted.")
+    show("Scanned.jpg")
+
 
 window = build()
 label_file_explorer = Label(window, text="Scan OMR ", width=100, height=4)
 label_file_explorer.place(x=0, y=0)
 
+label_file_explorer.option_add('*Font', 'Times 10')
 button_explore = Button(window, text="Browse Files", command=openImg)
-button_explore.place(x=130, y=80, width=140, height=40)
+button_explore.place(x=80, y=80, width=140, height=40)
 
-button_exit = Button(window, text="Exit", command=window.destroy)
-button_exit.place(x=430, y=80, width=140, height=40)
+'''button_exit = Button(window, text="Exit", command=window.destroy)
+button_exit.place(x=430, y=80, width=140, height=40)'''
 
-choice = Label(window,bg="white", text=" A:0 , B:1 , C:2 , D:3 , E:4 ").place(x=80, y=150)
+choice = Label(window, bg="white", text=" A:0 , B:1 , C:2 , D:3 , E:4 ").place(x=80, y=150)
 
-
-#noresult = Label(window,bg="white", text="N").place(x=80, y=400)
-
-labelchoice = Label(window,bg="white",text="Insert StudentId").place(x=80, y=230)
-labelchoice = Label(window,bg="white",text="Insert True Answer").place(x=80, y=280)
-labelmark = Label(window,bg="white",text="Insert Total Mark").place(x=80, y=330)
+labelstudent = Label(window, bg="white", text="Insert StudentId").place(x=80, y=180)
+labelcourse = Label(window, bg="white", text="Insert Course").place(x=80, y=230)
+labelanswer = Label(window, bg="white", text="Insert True Answer").place(x=80, y=280)
+labelmark = Label(window, bg="white", text="Insert Total Mark").place(x=80, y=330)
 
 studentlist = tk.Text(window, height=10)
-studentlist.place(x=80, y=255, width=120, height=20)
+studentlist.place(x=80, y=205, width=120, height=20)
+
+courselist = tk.Text(window, height=10)
+courselist.place(x=80, y=255, width=120, height=20)
 
 answerlist = tk.Text(window, height=10)
 answerlist.place(x=80, y=305, width=120, height=20)
@@ -174,12 +182,7 @@ answerlist.place(x=80, y=305, width=120, height=20)
 totalmark = tk.Text(window, height=10)
 totalmark.place(x=80, y=355, width=120, height=20)
 
-btnRead = tk.Button(window, height=1, width=10, text="Read",command=getTextInput)
+btnRead = tk.Button(window, height=1, width=10, text="Scan", command=getTextInput)
 btnRead.place(x=80, y=400, width=140, height=40)
 
-
-scroll_bar = Scrollbar(window)
-
-
-scroll_bar.pack(side=RIGHT,fill=Y)
 window.mainloop()

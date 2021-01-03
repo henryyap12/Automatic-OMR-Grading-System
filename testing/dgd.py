@@ -1,21 +1,39 @@
+import numpy as np
+import cv2
 import tkinter as tk
-from main import omrmarking
+from PIL import Image, ImageTk
 
-root = tk.Tk()
-root.geometry("400x240")
+#Set up GUI
+window = tk.Tk()  #Makes main window
+window.wm_title("Digital Microscope")
+window.config(background="#FFFFFF")
+
+#Graphics window
+imageFrame = tk.Frame(window, width=100, height=400)
+imageFrame.grid(row=0, column=0, padx=10, pady=2)
+
+#Capture video frames
+lmain = tk.Label(imageFrame)
+lmain.grid(row=0, column=0)
+cap = cv2.VideoCapture(0)
 
 
-def getTextInput():
-    result = textExample.get(1.0, tk.END+"-1c")
-    print(result)
+def show_frame():
+    _, frame = cap.read()
+    frame = cv2.flip(frame, 1)
+    cv2image = cv2.cvtColor(frame, cv2.COLOR_BGR2RGBA)
+    img = Image.fromarray(cv2image)
+    imgtk = ImageTk.PhotoImage(image=img)
+    lmain.imgtk = imgtk
+    lmain.configure(image=imgtk)
+    lmain.after(10, show_frame)
 
 
 
-textExample=tk.Text(root, height=10)
-textExample.pack()
-btnRead=tk.Button(root, height=1, width=10, text="Read",
-                    command=getTextInput)
+#Slider window (slider controls stage position)
+sliderFrame = tk.Frame(window, width=100, height=00)
+sliderFrame.grid(row = 200, column=0, padx=10, pady=2)
 
-btnRead.pack()
 
-root.mainloop()
+show_frame()  #Display 2
+window.mainloop()  #Starts GUI
