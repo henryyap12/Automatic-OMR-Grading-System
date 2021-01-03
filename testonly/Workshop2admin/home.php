@@ -4,24 +4,9 @@
     header("Location: ../Workshop2/login.php");
   }
   ?>
-  <?php
-$conn = mysqli_connect("localhost", "root", "", "automaticomr");
-		if ($conn-> connect_error) 
-		{
-			die ("Connection failed: ". $conn-> connect_error);
-		}
-    $username = $_SESSION["username"];
-    $sqlid = "SELECT userid FROM users WHERE username = '$username'";
-    $getid = $conn-> query($sqlid);
-    if ($getid-> num_rows === 1)
-    {
-      $fetchid = mysqli_fetch_assoc($getid);
-      $userid = implode($fetchid);
-    }
-$result = mysqli_query($conn,"SELECT * FROM subject WHERE userid = '$userid'");
-?>
 <!DOCTYPE html>
 <html>
+<head>
 <head>
 	<meta charset="utf-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
@@ -30,7 +15,8 @@ $result = mysqli_query($conn,"SELECT * FROM subject WHERE userid = '$userid'");
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
 	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 	<link rel="stylesheet" href="../../../assets/css/include.css">
-	<title>Subject</title>
+</head>
+	<title>Admin home page</title>
 </head>
 <style>
 ul {
@@ -93,6 +79,16 @@ h2{
   margin: 1px;
   font-size:25px;
 }
+button{
+	border:none;
+	float: right;
+
+}
+/*img{
+  width: 3%;
+  float: right;
+  margin-right: 20px;
+}*/
 .topnav .search-container {
   float: right;
 }
@@ -134,59 +130,85 @@ h2{
   .topnav input[type=text] {
     border: 1px solid #ccc;  
   }
+  table {
+  border-collapse: collapse;
+  width: 100%;
+}
+
+th, td {
+  padding: 8px;
+  text-align: left;
+  border-bottom: 1px solid #ddd;
+}
+
 </style>
 <body>
 <div class="jumbotron" style="margin-bottom:0px;margin-top:0px;background-color:#4ABDAC">
 	<img src="logo.png" width="100px" height="100px" style="float: right;">
 	<h1 style="font-size:60px;color:white">Automatic Omr Grading</h1>
-	<h2 style="font-size:20px;color:white">Your Grade Assitant</h2><br> 
+	<h2 style="font-size:20px;color:white">Your Grade Assitant</h2> <br>
 	 <h2 style="color:white">Mr <?=$_SESSION["username"];?></h2>  
-	 <button class="btn" style="float:right" type="submit" name="submit" onclick="return confirm('Are you sure you want to log out from this page?')"><a href="logout.php" style="color:white">Logout</a></button>
+	 <button class="btn" type="submit" name="submit" onclick="return confirm('Are you sure you want to log out from this page?')"><a href="logout.php" style="color:white">Logout</a></button>
 </div>
-	<ul>
-  <li><a  href="home.php"  name="home">Home</a></li>
-  <li><a href="subject.php" style="background-color: honeydew;" name="subject">Subject</a></li>
-  <li><a href="student.php" name="student">Student</a></li>
-  <li><a href="report.php" name="report">Report</a></li>
+<ul>
+  <li><a href="home.php" style="background-color: honeydew;" name="user">User</a></li>
+  <li><a href="reportadmin.php" name="reportadmin">Report</a></li>
+
 </ul>
 <br>
 <br>
 <br>
 <div class="container">
-<div class="row" style="width:100%">
-<div class="col-sm-9"></div>
-<button style="float:right;margin-left:10px"><a href="addsubject.php" style="text-decoration: none;">Add more subject</a></button><br>
-</div>
+<table>
+    <tr>
+      <th>UserID</th>
+      <th>Username</th>
+      <th>Email</th>
+      <th>Password</th>
+      <th>User type</th>
+      <th>Delete</th>
+      <th>Update</th>
+    </tr>
+    <?php
+    $conn = mysqli_connect("localhost", "root", "", "automaticomr");
+    if ($conn-> connect_error) 
+    {
+      die ("Connection failed: ". $conn-> connect_error);
+    }
+    ?>
+  <?php
+
+    $sql = "SELECT userid, username, email, password, usertype from users";
+    $result = $conn-> query($sql);
+
+    if ($result-> num_rows > 0)
+    {
+      while ($row = mysqli_fetch_assoc($result))
+      {
+        echo "<tr>";
+        echo "<td>".$row['userid']."</td>";
+        echo "<td>".$row['username']."</td>";
+        echo "<td>".$row['email']."</td>";
+        echo "<td>".$row['password']."</td>";
+        echo "<td>".$row['usertype']."</td>";
+        echo "<td><a href = 'delete.php?id=".$row['userid']."'>Delete</a></td>";
+        echo "<td><a href = 'update.php?id=".$row['userid']."'>Update</a></td>";
+        echo "</tr>";
+      }
+      echo "</table>";
+    }
+    else
+    {
+      echo "0 result";
+    }
+    $conn-> close();
+
+    ?>
+  </table><br><br>
+ </div>
+
+
 <br>
-<div class="row" style="width:100%">
-<div class="col-sm-1"></div>
-<table method="post" style="border-collapse: collapse;width: 80%; border: 1px solid #ddd;text-align: left;">
-	<tr>
-		<th style = "border: 1px solid #ddd;text-align: left; padding: 15px;">Subject Code</th>
-		<th style = "border: 1px solid #ddd;text-align: left; padding: 15px;">Subject Name</th>
-		<th style = "border: 1px solid #ddd;text-align: left; padding: 15px;">Action</th>
-		</tr>
-		
-<?php
-$i=0;
-while($row = mysqli_fetch_array($result)) {
-if($i%2==0)
-$classname="even";
-else
-$classname="odd";
-?>
-<tr class="<?php if(isset($classname)) echo $classname;?>">
-<td><?php echo $row["subjectcode"]; ?></td>
-<td><?php echo $row["subjectname"]; ?></td>
-<td><a href="mystudent.php?subjectcode=<?php echo $row["subjectcode"]; ?>">View Students</a></td>
-</tr>
-<?php
-$i++;
-}
-?>
-<br>
-<br>
-</table>
-</div></div>
+
 </body>
 </html>

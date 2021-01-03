@@ -14,8 +14,7 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
   <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
   <link rel="stylesheet" href="../../../assets/css/include.css">
-	<title>Subject</title>
-
+	<title>Add student form</title>
 </head>
 <style>
 ul {
@@ -78,10 +77,9 @@ h2{
   margin: 1px;
   font-size:25px;
 }
-.btn{
+button{
   float: right;
-  border:none;
- 
+  margin-right: 40px;
 }
 .topnav .search-container {
   float: right;
@@ -144,7 +142,7 @@ input[type=text]{
 
 </style>
 <body>
-	  <div class="jumbotron" style="margin-bottom:0px;margin-top:0px;background-color:#4ABDAC">
+    <div class="jumbotron" style="margin-bottom:0px;margin-top:0px;background-color:#4ABDAC">
   <img src="logo.png" width="100px" height="100px" style="float: right;">
   <h1 style="font-size:60px;color:white">Automatic Omr Grading</h1>
   <h2 style="font-size:20px;color:white">Your Grade Assitant</h2> 
@@ -153,15 +151,14 @@ input[type=text]{
 </div>
 	<ul>
   <li><a  href="home.php"  name="home">Home</a></li>
-  <li><a href="subject.php" style="background-color: honeydew;" name="subject">Subject</a></li>
-  <li><a href="student.php" name="student">Student</a></li>
+  <li><a href="subject.php" name="subject">Subject</a></li>
+  <li><a href="student.php" style="background-color: honeydew;"  name="student">Student</a></li>
   <li><a href="report.php" name="report">Report</a></li>
 </ul>
 <br>
-<div class="container">
-<button style="margin-left:200px"><a href="subject.php" style="color:black">Back</a></button>
-<br><br>
-<p style="text-align: center; font-size: 30px; font-family: monospace;">Add Subject</p>
+<br>
+<br>
+
 <div class="container" style=" text-align: center;
     padding: 10px;
     background-color: darkseagreen;
@@ -170,21 +167,25 @@ input[type=text]{
     font-family: monospace;
     font-size: 20px;
     border-radius: 5px;">
-<br>
-  <form method="post" action="add.php" enctype="multipart/form-data" style="margin: auto;">
-    Subject Code:<br> <input type="text" name="subjectcode" required>
+
+  <form method="post" action="addstudentaction.php" enctype="multipart/form-data" style="margin: auto;">
+    Student Name:<br> <input type="text" name="studentname" required>
       <br><br>
     
       
-    Subject Name: <br> <input type="text" name="subjectname" required>
+    Student Matric Number: <br> <input type="text" name="studentnumber" required>
       <br><br>
-	<button onclick="alert('Subject has been added!')"><input type="submit" value="submit" name="submit" ></button> 
+
+      Subject Code: <br> <input type="text" name="subjectcode" required>
+      <br><br>
 
       <br><br>
-      </form>
+      <button onclick="alert('Student has been added!')"><input type="submit" value="submit" name="submit" ></button> 
+</form>
 </div>
 <br>
 <br>
-</div>
+<!-- <button><a href="subject.php" style="text-decoration: none";>Back</a></button> -->
+
 </body>
 </html>

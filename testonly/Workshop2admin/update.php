@@ -1,21 +1,62 @@
 <?php 
   session_start();
+
+  // if(isset($_SESSION["loggedin"]) && $_SESSION["loggedin"] === true){
+  //   header("../loginregistrationsystem/login.php");
+  //   exit;
   if(!isset($_SESSION['username'])){
     header("Location: ../Workshop2/login.php");
   }
-  ?>
+
+?>
+
+<?php
+// php code to Update data from mysql database Table
+ $userid = $_GET['id'];
+if(isset($_POST['update']))
+{
+    
+   $hostname = "localhost";
+   $username = "root";
+   $password = "";
+   $databaseName = "automaticomr";
+   
+   $connect = mysqli_connect("localhost", "root", "", "automaticomr");
+   // get values form input text and number
+   // $userid = $_POST['userid'];
+   // // $username = $_POST['username'];
+   // // $email = $_POST['email'];
+    $usertype = $_POST['type'];
+
+
+   $query = "UPDATE users SET usertype = '".$usertype."' WHERE userid = '".$userid."'";
+   
+   $result = mysqli_query($connect, $query);
+   
+   if($result)
+   {
+       echo 'Data Updated';
+   }else{
+       echo 'Data Not Updated';
+   }
+   mysqli_close($connect);
+}
+
+?>
+
 <!DOCTYPE html>
 <html>
 <head>
-   <meta charset="utf-8">
+<head>
+  <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
   <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
   <link rel="stylesheet" href="../../../assets/css/include.css">
-	<title>Subject</title>
-
+</head>
+  <title>Admin home page</title>
 </head>
 <style>
 ul {
@@ -78,11 +119,16 @@ h2{
   margin: 1px;
   font-size:25px;
 }
-.btn{
-  float: right;
+button{
   border:none;
- 
+  float: right;
+
 }
+/*img{
+  width: 3%;
+  float: right;
+  margin-right: 20px;
+}*/
 .topnav .search-container {
   float: right;
 }
@@ -124,67 +170,51 @@ h2{
   .topnav input[type=text] {
     border: 1px solid #ccc;  
   }
-
-*{
-    box-sizing: border-box;
-  }
-input[type=text]{
-  width: 90%;
-  padding: 12px;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-  resize: vertical;
-  background-color: floralwhite;
+  table {
+  border-collapse: collapse;
+  width: 100%;
 }
-.ra
-{
+
+th, td {
+  padding: 8px;
   text-align: left;
-  background-color: floralwhite;
+  border-bottom: 1px solid #ddd;
 }
 
 </style>
 <body>
-	  <div class="jumbotron" style="margin-bottom:0px;margin-top:0px;background-color:#4ABDAC">
+<div class="jumbotron" style="margin-bottom:0px;margin-top:0px;background-color:#4ABDAC">
   <img src="logo.png" width="100px" height="100px" style="float: right;">
   <h1 style="font-size:60px;color:white">Automatic Omr Grading</h1>
-  <h2 style="font-size:20px;color:white">Your Grade Assitant</h2> 
-   <h2 style="color:white">Mr<?=$_SESSION["username"];?></h2>  
+  <h2 style="font-size:20px;color:white">Your Grade Assitant</h2> <br>
+   <h2 style="color:white">Mr <?=$_SESSION["username"];?></h2>  
    <button class="btn" type="submit" name="submit" onclick="return confirm('Are you sure you want to log out from this page?')"><a href="logout.php" style="color:white">Logout</a></button>
 </div>
-	<ul>
-  <li><a  href="home.php"  name="home">Home</a></li>
-  <li><a href="subject.php" style="background-color: honeydew;" name="subject">Subject</a></li>
-  <li><a href="student.php" name="student">Student</a></li>
-  <li><a href="report.php" name="report">Report</a></li>
+<ul>
+  <li><a href="home.php" style="background-color: honeydew;" name="user">User</a></li>
+  <li><a href="reportadmin.php" name="reportadmin">Report</a></li>
+
 </ul>
 <br>
-<div class="container">
-<button style="margin-left:200px"><a href="subject.php" style="color:black">Back</a></button>
-<br><br>
-<p style="text-align: center; font-size: 30px; font-family: monospace;">Add Subject</p>
-<div class="container" style=" text-align: center;
-    padding: 10px;
-    background-color: darkseagreen;
-    width: 50%;
-    margin: auto;
-    font-family: monospace;
-    font-size: 20px;
-    border-radius: 5px;">
 <br>
-  <form method="post" action="add.php" enctype="multipart/form-data" style="margin: auto;">
-    Subject Code:<br> <input type="text" name="subjectcode" required>
-      <br><br>
-    
+<br>
       
-    Subject Name: <br> <input type="text" name="subjectname" required>
-      <br><br>
-	<button onclick="alert('Subject has been added!')"><input type="submit" value="submit" name="submit" ></button> 
+<h2><?php=$_SESSION["username"];?></h2><br><br>
+ 
 
-      <br><br>
-      </form>
-</div>
-<br>
-<br>
-</div>
-</body>
+        <form method="post" action="">
+
+            Update: <br><input type="radio" name="type" value="admin">Admin<br>
+            <input type="radio" name="type" value="educator">Educator<br>
+
+            <input type="submit" name="update" value="Update Data">
+            <br>
+            <br>
+            <button><a href="home.php" style="text-decoration: none";>Back</a></button>
+
+        </form>
+
+    </body>
+
+
 </html>
