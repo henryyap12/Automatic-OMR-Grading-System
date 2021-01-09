@@ -1,6 +1,7 @@
 import cv2
 import numpy as np
 
+
 def reorder(myPoints):
     myPoints = myPoints.reshape((4, 2))
     myPointsNew = np.zeros((4, 1, 2), dtype=np.int32)
